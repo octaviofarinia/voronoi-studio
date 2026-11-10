@@ -172,8 +172,8 @@ export function Stage({ geometry, points, settings, tool, frameRef, controlRef, 
     const adding = tool === 'add' || (tool === 'move' && event.altKey)
     const erasing = tool === 'erase' || (tool === 'move' && event.shiftKey)
     if (adding) {
-      if (!inRegion(x, y)) { onNotice('Points go inside the pattern area, within the border.'); return }
-      if (live.current.length / 2 >= 20_000) { onNotice('This design has the most points the app allows (20,000).'); return }
+      if (!inRegion(x, y)) { onNotice('Los puntos deben estar dentro del área del patrón, sin salir del borde.'); return }
+      if (live.current.length / 2 >= 20_000) { onNotice('Este diseño alcanzó el límite de puntos de la aplicación (20 000).'); return }
       onBeginEdit('add')
       const [px, py] = clampToRegion(geometry.region, x, y)
       const next = new Float64Array(live.current.length + 2)
@@ -256,7 +256,7 @@ export function Stage({ geometry, points, settings, tool, frameRef, controlRef, 
   }
 
   return <div ref={box} className="stage-canvas">
-    <canvas ref={canvas} style={{ cursor }} aria-label="Sheet preview. Drag points to move them; Alt-click to add; Shift-click to erase."
+    <canvas ref={canvas} style={{ cursor }} aria-label="Vista previa de la lámina. Arrastra puntos para moverlos; Alt + clic para agregar; Mayús + clic para borrar."
       role="img" onPointerDown={onPointerDown} onPointerMove={onPointerMove} onPointerUp={onPointerUp} onPointerCancel={onPointerUp}
       onPointerLeave={() => { if (!drag.current) setHover(null) }} onContextMenu={event => event.preventDefault()} />
   </div>

@@ -16,41 +16,41 @@ export const FilePanel = memo(function FilePanel({ s, change, unsaved, busy, onN
 }) {
   const [pw, ph] = pixelSize(s.width, s.height, s.dpi)
   const pngBlocked = pngProblem(pw, ph)
-  const fileUnits = s.units === 'in' ? 'inches' : 'millimetres'
-  const working = busy && 'Wait for the pattern to finish updating.'
+  const fileUnits = s.units === 'in' ? 'pulgadas' : 'milímetros'
+  const working = busy && 'Espera a que termine de actualizarse el patrón.'
   const contents = cutContents(s)
-  const nothing = !contents.length && `Nothing to cut. Turn on Sites, ${s.cellStyle === 'holes' ? 'Holes' : 'Edges'} or Delaunay above the sheet, or include the sheet outline.`
+  const nothing = !contents.length && `No hay nada que cortar. Activa Puntos, ${s.cellStyle === 'holes' ? 'Huecos' : 'Aristas'} o Delaunay en la barra superior, o incluye el contorno de la lámina.`
   const layers = cutLayers(s, s.shape === 'custom' && !!s.customShape && holeCount(s.customShape) > 0)
   return <>
-    <Section title="Project">
-      <p className="hint save-state">{unsaved ? <><span className="dot" aria-hidden="true" />Unsaved changes since the last save.</> : 'All changes saved.'}</p>
+    <Section title="Proyecto">
+      <p className="hint save-state">{unsaved ? <><span className="dot" aria-hidden="true" />Hay cambios sin guardar.</> : 'Todos los cambios guardados.'}</p>
       <div className="button-row three">
-        <Button tip="Start a new design with the default settings." onClick={onNew}>New</Button>
-        <Button tip="Open a Voronoi Studio project file (.voronoi.json)." shortcut="⌘O" onClick={onOpen}>Open…</Button>
-        <Button className="primary" tip="Save the settings and every point, including hand edits, as a project file you can reopen." shortcut="⌘S" unavailable={working} onClick={onSave}>Save</Button>
+        <Button tip="Crea un diseño con los ajustes predeterminados." onClick={onNew}>Nuevo</Button>
+        <Button tip="Abre un archivo de proyecto de Voronoi Studio (.voronoi.json)." shortcut="⌘O" onClick={onOpen}>Abrir…</Button>
+        <Button className="primary" tip="Guarda los ajustes y todos los puntos, incluidas las ediciones manuales, en un proyecto que puedes volver a abrir." shortcut="⌘S" unavailable={working} onClick={onSave}>Guardar</Button>
       </div>
       {openError && <p className="hint error" role="alert">{openError}</p>}
     </Section>
 
-    <Section title="For cutting">
+    <Section title="Para corte">
       <div className="button-row">
-        <Button tip={`Hairline paths in ${fileUnits} at real size for LightBurn, Glowforge and other laser software: cuts in red, holes first, with sites and Delaunay lines in their own colours if shown.`} unavailable={working || nothing} onClick={() => onExport('laser')}>Laser SVG</Button>
-        <Button tip={`AutoCAD R12 DXF in ${fileUnits}, with rounded corners as true arcs and sites and Delaunay lines on their own layers if shown, for Fusion, Illustrator, VCarve and CAM.`} unavailable={working || nothing} onClick={() => onExport('dxf')}>DXF</Button>
+        <Button tip={`Trazos ultrafinos en ${fileUnits} a tamaño real para LightBurn, Glowforge y otros programas de láser: cortes en rojo, primero los huecos, con los puntos y las líneas de Delaunay en sus propios colores si están visibles.`} unavailable={working || nothing} onClick={() => onExport('laser')}>SVG láser</Button>
+        <Button tip={`DXF AutoCAD R12 en ${fileUnits}, con esquinas redondeadas como arcos reales y los puntos y las líneas de Delaunay en capas propias si están visibles, para Fusion, Illustrator, VCarve y CAM.`} unavailable={working || nothing} onClick={() => onExport('dxf')}>DXF</Button>
       </div>
-      <SwitchField label="Include the sheet outline" checked={s.sheetOutline}
-        tip="Add the sheet's edge as the outer cut, on its own layer after the inner cuts." onChange={sheetOutline => change({ sheetOutline }, 'sheetOutline')} />
-      <p className="hint">{nothing || <>Cut files hold what the view shows: {listWords(contents)}, each line once. Layers: {listWords(layers)}.</>}</p>
+      <SwitchField label="Incluir el contorno de la lámina" checked={s.sheetOutline}
+        tip="Agrega el contorno de la lámina como corte exterior, en su propia capa después de los cortes interiores." onChange={sheetOutline => change({ sheetOutline }, 'sheetOutline')} />
+      <p className="hint">{nothing || <>Los archivos de corte incluyen lo que ves: {listWords(contents)}, sin repetir líneas. Capas: {listWords(layers)}.</>}</p>
     </Section>
 
-    <Section title="For artwork">
+    <Section title="Para diseño gráfico">
       <div className="button-row">
-        <Button tip={`The design as you see it, with colours, sites and Delaunay lines if shown, sized in ${s.units === 'px' ? 'pixels' : UNIT_NAME[s.units === 'in' ? 'in' : 'mm']}.`}
+        <Button tip={`El diseño tal como lo ves, con colores, puntos y líneas de Delaunay si están visibles, en ${s.units === 'px' ? 'píxeles' : UNIT_NAME[s.units === 'in' ? 'in' : 'mm']}.`}
           unavailable={working} onClick={() => onExport('svg')}>SVG</Button>
-        <Button tip={`A ${pw.toLocaleString()} × ${ph.toLocaleString()} px image at ${s.dpi} pixels per inch.`} unavailable={working || (pngBlocked ?? false)} onClick={() => onExport('png')}>PNG</Button>
+        <Button tip={`Una imagen de ${pw.toLocaleString()} × ${ph.toLocaleString()} px a ${s.dpi} píxeles por pulgada.`} unavailable={working || (pngBlocked ?? false)} onClick={() => onExport('png')}>PNG</Button>
       </div>
-      <SwitchField label="Transparent PNG background" checked={s.transparentPng}
-        tip="Leave the sheet background out of the PNG." onChange={transparentPng => change({ transparentPng }, 'transparentPng')} />
-      <p className="hint">{pngBlocked ?? `PNG: ${pw.toLocaleString()} × ${ph.toLocaleString()} px. Exports always show the whole sheet, whatever the zoom.`}</p>
+      <SwitchField label="Fondo PNG transparente" checked={s.transparentPng}
+        tip="Exporta el PNG sin el fondo de la lámina." onChange={transparentPng => change({ transparentPng }, 'transparentPng')} />
+      <p className="hint">{pngBlocked ?? `PNG: ${pw.toLocaleString()} × ${ph.toLocaleString()} px. Las exportaciones siempre muestran la lámina completa, sin importar el zoom.`}</p>
     </Section>
   </>
 })

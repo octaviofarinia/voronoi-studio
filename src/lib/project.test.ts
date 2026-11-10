@@ -29,9 +29,9 @@ describe('project files', () => {
 
   it('explains bad files instead of opening them', () => {
     expect(() => parseProject('not json')).toThrow(ProjectError)
-    expect(() => parseProject('{"schema":"other"}')).toThrow(/schema/)
-    expect(() => parseProject('{"schema":"voronoi-studio/project","version":99}')).toThrow(/newer/)
-    expect(() => parseProject('{"schema":"voronoi-studio/project","version":1,"points":[1,2,3]}')).toThrow(/damaged/)
+    expect(() => parseProject('{"schema":"other"}')).toThrow(/esquema/)
+    expect(() => parseProject('{"schema":"voronoi-studio/project","version":99}')).toThrow(/más reciente/)
+    expect(() => parseProject('{"schema":"voronoi-studio/project","version":1,"points":[1,2,3]}')).toThrow(/dañados/)
   })
 
   it('clamps out-of-range and wrongly typed settings', () => {
@@ -54,7 +54,7 @@ describe('units and presets', () => {
     expect(formatLength(12.5, 'mm', 300)).toBe('12.5 mm')
     expect(formatLength(25.4, 'in', 300)).toBe('1 in')
     expect(formatLong(4820, 'mm')).toBe('4.82 m')
-    expect(formatSmall(0.001, 'mm', 300)).toBe('under 0.01 mm')
+    expect(formatSmall(0.001, 'mm', 300)).toBe('menos de 0.01 mm')
     expect(formatSmall(0, 'mm', 300)).toBe('0 mm')
     expect(pixelSize(200, 200, 300)).toEqual([2362, 2362])
   })

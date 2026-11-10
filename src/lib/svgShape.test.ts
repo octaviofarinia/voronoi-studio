@@ -135,13 +135,13 @@ describe('SVG outlines', () => {
     expect(() => readSvgOutlines('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10"><image width="10" height="10" href="a.png"/></svg>')).toThrow(PICTURE_ONLY)
     // A clip sized to whatever uses it has no outline of its own.
     expect(() => readSvgOutlines(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10"><clipPath id="c" clipPathUnits="objectBoundingBox"><rect width="1" height="1"/></clipPath>
-      <image clip-path="url(#c)" width="10" height="10" href="a.png"/></svg>`)).toThrow('only a picture')
+      <image clip-path="url(#c)" width="10" height="10" href="a.png"/></svg>`)).toThrow('solo contiene una imagen')
   })
 
   it('explains files it cannot use', () => {
     expect(() => readSvgOutlines('not an svg')).toThrow(SvgShapeError)
-    expect(() => readSvgOutlines('<svg viewBox="0 0 10 10"><path d="M0 0L10 10"/></svg>')).toThrow(/open lines/)
-    expect(() => readSvgOutlines('<svg viewBox="0 0 10 10"><g/></svg>')).toThrow(/no closed outlines/)
+    expect(() => readSvgOutlines('<svg viewBox="0 0 10 10"><path d="M0 0L10 10"/></svg>')).toThrow(/líneas abiertas/)
+    expect(() => readSvgOutlines('<svg viewBox="0 0 10 10"><g/></svg>')).toThrow(/no tiene contornos cerrados/)
     expect(() => shapeFromOutlines([[[0, 0], [0.5, 0], [0.5, 0.5]]], 'tiny')).toThrow(ShapeError)
   })
 })

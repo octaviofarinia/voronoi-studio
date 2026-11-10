@@ -80,9 +80,9 @@ export function useDesign(initial: () => { doc: Doc; saved: boolean }, onStatus:
         apply({ ...docRef.current, points: result.points, handEdited: false, stale: false }, false)
         setCapped(result.capped)
         setSpacing(result.spacing)
-        if (result.capped) { status.current({ text: 'Stopped at 20,000 points. Increase the spacing.', warning: true }); cappedShown.current = true }
+        if (result.capped) { status.current({ text: 'Se alcanzó el límite de 20 000 puntos. Aumenta la separación.', warning: true }); cappedShown.current = true }
         else if (cappedShown.current) { status.current(null); cappedShown.current = false }
-      }).catch((error: Error) => status.current({ text: `The pattern could not be made: ${error.message}`, warning: true }))
+      }).catch((error: Error) => status.current({ text: `No se pudo crear el patrón: ${error.message}`, warning: true }))
         .finally(() => {
           inFlight.current = false
           setBusy(false)
@@ -118,12 +118,12 @@ export function useDesign(initial: () => { doc: Doc; saved: boolean }, onStatus:
       if (mine !== token.current) return
       setHistory(h => record(h, before, null))
       apply({ ...docRef.current, points: result.points }, false)
-    }).catch((error: Error) => status.current({ text: `Relaxing failed: ${error.message}`, warning: true }))
+    }).catch((error: Error) => status.current({ text: `No se pudo relajar: ${error.message}`, warning: true }))
       .finally(() => { inFlight.current = false; setBusy(false) })
   }, [apply, run])
 
   const toggleAuto = useCallback(() => {
-    if (autoOn.current) { stopAuto('Auto-relax stopped.'); return }
+    if (autoOn.current) { stopAuto('Se detuvo la relajación automática.'); return }
     if (inFlight.current) return
     autoOn.current = true
     setAuto(true)
@@ -140,13 +140,13 @@ export function useDesign(initial: () => { doc: Doc; saved: boolean }, onStatus:
         if (!autoOn.current || mine !== token.current) return
         steps++
         apply({ ...docRef.current, points: result.points }, false)
-        if (result.maxMove < tolerance) { stopAuto(`Settled after ${steps.toLocaleString()} relax steps.`); return }
-        if (steps >= AUTO_MAX_STEPS) { stopAuto(`Stopped after ${AUTO_MAX_STEPS.toLocaleString()} steps.`); return }
-        status.current({ text: `Relaxing · step ${steps.toLocaleString()}` })
+        if (result.maxMove < tolerance) { stopAuto(`Se estabilizó tras ${steps.toLocaleString()} pasos de relajación.`); return }
+        if (steps >= AUTO_MAX_STEPS) { stopAuto(`Se detuvo tras ${AUTO_MAX_STEPS.toLocaleString()} pasos.`); return }
+        status.current({ text: `Relajando · paso ${steps.toLocaleString()}` })
         window.setTimeout(loop, 16)
-      }).catch(() => stopAuto('Auto-relax stopped.'))
+      }).catch(() => stopAuto('Se detuvo la relajación automática.'))
     }
-    status.current({ text: 'Relaxing…' })
+    status.current({ text: 'Relajando…' })
     loop()
   }, [apply, run, stopAuto])
 

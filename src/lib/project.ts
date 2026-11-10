@@ -25,17 +25,17 @@ export class ProjectError extends Error {}
 
 export function parseProject(text: string): Design {
   let data: unknown
-  try { data = JSON.parse(text) } catch { throw new ProjectError('This file is not a Voronoi Studio project: it is not valid JSON.') }
-  if (!data || typeof data !== 'object') throw new ProjectError('This file is not a Voronoi Studio project.')
+  try { data = JSON.parse(text) } catch { throw new ProjectError('Este archivo no es un proyecto de Voronoi Studio: el JSON no es válido.') }
+  if (!data || typeof data !== 'object') throw new ProjectError('Este archivo no es un proyecto de Voronoi Studio.')
   const file = data as Partial<ProjectFile>
-  if (file.schema !== SCHEMA) throw new ProjectError('This file is not a Voronoi Studio project: it has no Voronoi Studio schema.')
+  if (file.schema !== SCHEMA) throw new ProjectError('Este archivo no es un proyecto de Voronoi Studio: no tiene el esquema de Voronoi Studio.')
   if (typeof file.version !== 'number' || file.version > VERSION) {
-    throw new ProjectError(`This project was saved by a newer Voronoi Studio (file version ${String(file.version)}). Update the app to open it.`)
+    throw new ProjectError(`Este proyecto se guardó con una versión más reciente de Voronoi Studio (versión de archivo ${String(file.version)}). Actualiza la aplicación para abrirlo.`)
   }
   const settings = sanitizeSettings(file.settings)
   const raw = Array.isArray(file.points) ? file.points : []
   if (raw.length % 2 || raw.length / 2 > MAX_POINTS || !raw.every(v => typeof v === 'number' && Number.isFinite(v))) {
-    throw new ProjectError('The points in this project are damaged, so it cannot be opened.')
+    throw new ProjectError('Los puntos de este proyecto están dañados; no se puede abrir.')
   }
   // Points outside the sheet are pulled onto it.
   const points = Float64Array.from(raw as number[], (v, i) => Math.min(i % 2 ? settings.height : settings.width, Math.max(0, v)))

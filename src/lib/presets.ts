@@ -8,17 +8,17 @@ export type SheetPreset = { id: string; label: string; width: number; height: nu
 const mm = (inches: number) => inches * 25.4
 
 export const SHEET_PRESETS: SheetPreset[] = [
-  { id: 'square-1080', label: 'Square 1080 × 1080 px', width: 0, height: 0, units: 'px', shape: 'rect', pixels: [1080, 1080] },
-  { id: 'portrait-1080', label: 'Portrait post 1080 × 1350 px', width: 0, height: 0, units: 'px', shape: 'rect', pixels: [1080, 1350] },
+  { id: 'square-1080', label: 'Cuadrado 1080 × 1080 px', width: 0, height: 0, units: 'px', shape: 'rect', pixels: [1080, 1080] },
+  { id: 'portrait-1080', label: 'Publicación vertical 1080 × 1350 px', width: 0, height: 0, units: 'px', shape: 'rect', pixels: [1080, 1350] },
   { id: 'hd', label: 'HD 1920 × 1080 px', width: 0, height: 0, units: 'px', shape: 'rect', pixels: [1920, 1080] },
-  { id: 'letter', label: 'US Letter 8.5 × 11 in', width: mm(8.5), height: mm(11), units: 'in', shape: 'rect' },
+  { id: 'letter', label: 'Carta 8,5 × 11 in', width: mm(8.5), height: mm(11), units: 'in', shape: 'rect' },
   { id: 'a4', label: 'A4 210 × 297 mm', width: 210, height: 297, units: 'mm', shape: 'rect' },
   { id: 'a3', label: 'A3 297 × 420 mm', width: 297, height: 420, units: 'mm', shape: 'rect' },
-  { id: 'tile-200', label: 'Tile 200 × 200 mm', width: 200, height: 200, units: 'mm', shape: 'rect' },
-  { id: 'sheet-12', label: 'Laser sheet 12 × 12 in', width: mm(12), height: mm(12), units: 'in', shape: 'rect' },
+  { id: 'tile-200', label: 'Baldosa 200 × 200 mm', width: 200, height: 200, units: 'mm', shape: 'rect' },
+  { id: 'sheet-12', label: 'Lámina para láser 12 × 12 in', width: mm(12), height: mm(12), units: 'in', shape: 'rect' },
   { id: 'panel-600', label: 'Panel 600 × 400 mm', width: 600, height: 400, units: 'mm', shape: 'rect' },
-  { id: 'coaster', label: 'Coaster Ø 100 mm', width: 100, height: 100, units: 'mm', shape: 'ellipse' },
-  { id: 'disc-300', label: 'Disc Ø 300 mm', width: 300, height: 300, units: 'mm', shape: 'ellipse' },
+  { id: 'coaster', label: 'Posavasos Ø 100 mm', width: 100, height: 100, units: 'mm', shape: 'ellipse' },
+  { id: 'disc-300', label: 'Disco Ø 300 mm', width: 300, height: 300, units: 'mm', shape: 'ellipse' },
 ]
 
 // The sheet size in millimetres for a preset; pixel presets depend on pixels-per-inch.
