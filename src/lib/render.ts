@@ -132,8 +132,8 @@ export const PNG_MAX_SIDE = 16_384
 export const PNG_MAX_PIXELS = 120_000_000
 
 export function pngProblem(width: number, height: number): string | null {
-  if (width > PNG_MAX_SIDE || height > PNG_MAX_SIDE) return `That PNG would be ${width.toLocaleString()} × ${height.toLocaleString()} px, over the ${PNG_MAX_SIDE.toLocaleString()} px a side browsers can draw. Lower the pixels per inch on the Sheet tab, or export SVG.`
-  if (width * height > PNG_MAX_PIXELS) return `That PNG would be ${Math.round((width * height) / 1e6)} megapixels, more than browsers can draw. Lower the pixels per inch on the Sheet tab, or export SVG.`
+  if (width > PNG_MAX_SIDE || height > PNG_MAX_SIDE) return `Ese PNG tendría ${width.toLocaleString()} × ${height.toLocaleString()} px y superaría el límite de ${PNG_MAX_SIDE.toLocaleString()} px por lado del navegador. Reduce los píxeles por pulgada en la pestaña Lámina o exporta un SVG.`
+  if (width * height > PNG_MAX_PIXELS) return `Ese PNG tendría ${Math.round((width * height) / 1e6)} megapíxeles, más de lo que el navegador puede generar. Reduce los píxeles por pulgada en la pestaña Lámina o exporta un SVG.`
   return null
 }
 

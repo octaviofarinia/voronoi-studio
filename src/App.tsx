@@ -63,7 +63,7 @@ const baseName = (s: Settings) => {
 
 export function App() {
   const [first] = useState(initialDesign)
-  const [status, setStatus] = useState<Status>(() => (first.restored ? { text: 'Restored your last session.' } : null))
+  const [status, setStatus] = useState<Status>(() => (first.restored ? { text: 'Se restauró tu última sesión.' } : null))
   const design = useDesign(() => first, setStatus)
   const { doc } = design
   const s = doc.settings
@@ -107,26 +107,26 @@ export function App() {
   const guard = useCallback((when: boolean, p: Pending) => { if (when) setPending(p); else p.run() }, [])
 
   const generateNew = useCallback(() => guard(doc.handEdited, {
-    title: 'Replace your edited points?', confirm: 'Generate new',
-    body: 'A new pattern replaces the points you moved, added or erased. Undo brings them back.',
+    title: '¿Reemplazar los puntos editados?', confirm: 'Generar nuevo',
+    body: 'El nuevo patrón reemplaza los puntos que moviste, agregaste o borraste. Puedes recuperarlos con Deshacer.',
     run: () => design.generate(randomSeed()),
   }), [guard, doc.handEdited, design])
 
   const applySettings = () => guard(true, {
-    title: 'Apply the new settings?', confirm: 'Apply settings',
-    body: 'Your hand-edited points will be replaced by a new pattern from the current settings. Undo brings them back.',
+    title: '¿Aplicar los nuevos ajustes?', confirm: 'Aplicar ajustes',
+    body: 'Los puntos editados a mano se reemplazarán por un patrón con los ajustes actuales. Puedes recuperarlos con Deshacer.',
     run: () => design.generate(),
   })
 
   const newDesign = () => guard(design.unsaved, {
-    title: 'Start a new design?', confirm: 'Discard and start new',
-    body: 'Unsaved changes in the current design will be lost. Undo can still bring it back during this session.',
-    run: () => { design.replace(freshDoc({ ...DEFAULTS, seed: randomSeed() }), true); setStatus({ text: 'New design.' }) },
+    title: '¿Crear un nuevo diseño?', confirm: 'Descartar y crear nuevo',
+    body: 'Se perderán los cambios sin guardar del diseño actual. Puedes recuperarlo con Deshacer durante esta sesión.',
+    run: () => { design.replace(freshDoc({ ...DEFAULTS, seed: randomSeed() }), true); setStatus({ text: 'Nuevo diseño.' }) },
   })
 
   const openProject = () => guard(design.unsaved, {
-    title: 'Open another project?', confirm: 'Discard and open',
-    body: 'Unsaved changes in the current design will be lost. Undo can still bring it back during this session.',
+    title: '¿Abrir otro proyecto?', confirm: 'Descartar y abrir',
+    body: 'Se perderán los cambios sin guardar del diseño actual. Puedes recuperarlo con Deshacer durante esta sesión.',
     run: () => fileInput.current?.click(),
   })
 
@@ -135,18 +135,18 @@ export function App() {
       const opened = parseProject(await file.text())
       design.replace({ ...opened, stale: false }, true)
       setOpenError('')
-      setStatus({ text: `Opened ${file.name}.` })
+      setStatus({ text: `Se abrió ${file.name}.` })
     } catch (error) {
       // The current design stays as it was.
-      setOpenError(error instanceof ProjectError ? error.message : `${file.name} could not be read.`)
+      setOpenError(error instanceof ProjectError ? error.message : `No se pudo leer ${file.name}.`)
       setTab('file')
     }
   }
 
   // An SVG outline becomes the sheet. A new shape means a new pattern, so hand edits are confirmed first.
   const replaceEdits = (run: () => void) => guard(doc.handEdited, {
-    title: 'Replace your edited points?', confirm: 'Use the new shape',
-    body: 'A new sheet shape gets a new pattern, which replaces the points you moved, added or erased. Undo brings them back.',
+    title: '¿Reemplazar los puntos editados?', confirm: 'Usar la nueva forma',
+    body: 'Al cambiar la forma de la lámina se genera un patrón que reemplaza los puntos que moviste, agregaste o borraste. Puedes recuperarlos con Deshacer.',
     run,
   })
   const importShape = () => replaceEdits(() => shapeInput.current?.click())
@@ -159,12 +159,12 @@ export function App() {
       design.change({ shape: 'custom', customShape: shape, width: shape.width, height: shape.height }, 'customShape')
       if (edited) design.generate() // already confirmed: start fresh in the new shape
       setTab('sheet')
-      const skipped = outlines.open ? ` ${outlines.open} open ${outlines.open === 1 ? 'line was' : 'lines were'} left out.` : ''
-      const using = outlines.fromClip ? `${file.name} is a picture, so the outline of its clipping mask is the sheet.` : `Using ${file.name} as the sheet.`
+      const skipped = outlines.open ? ` Se ${outlines.open === 1 ? 'omitió' : 'omitieron'} ${outlines.open} ${outlines.open === 1 ? 'línea abierta' : 'líneas abiertas'}.` : ''
+      const using = outlines.fromClip ? `${file.name} es una imagen; se usa el contorno de su máscara de recorte como lámina.` : `Se usa ${file.name} como lámina.`
       setStatus({ text: `${using}${skipped}`, warning: Boolean(outlines.open) || outlines.fromClip })
     } catch (error) {
       const known = error instanceof SvgShapeError || error instanceof ShapeError
-      setStatus({ text: known ? error.message : `${file.name} could not be read as a shape.`, warning: true })
+      setStatus({ text: known ? error.message : `No se pudo leer ${file.name} como una forma.`, warning: true })
     }
   }
 
@@ -177,11 +177,11 @@ export function App() {
       event.preventDefault()
       if (/\.svg$/i.test(file.name) || file.type === 'image/svg+xml') replaceEdits(() => void readShape(file))
       else if (/\.json$/i.test(file.name)) guard(design.unsaved, {
-        title: 'Open another project?', confirm: 'Discard and open',
-        body: 'Unsaved changes in the current design will be lost. Undo can still bring it back during this session.',
+        title: '¿Abrir otro proyecto?', confirm: 'Descartar y abrir',
+        body: 'Se perderán los cambios sin guardar del diseño actual. Puedes recuperarlo con Deshacer durante esta sesión.',
         run: () => void readProject(file),
       })
-      else setStatus({ text: `${file.name} isn’t an SVG shape or a Voronoi Studio project.`, warning: true })
+      else setStatus({ text: `${file.name} no es una forma SVG ni un proyecto de Voronoi Studio.`, warning: true })
     }
     window.addEventListener('dragover', over)
     window.addEventListener('drop', drop)
@@ -189,34 +189,34 @@ export function App() {
   })
 
   const report = (name: string, result: Awaited<ReturnType<typeof saveFile>>) => {
-    if (result === 'saved' || result === 'downloaded') setStatus({ text: `${result === 'saved' ? 'Saved' : 'Downloaded'} ${name}.` })
-    else if (result === 'failed') setStatus({ text: `${name} could not be saved.`, warning: true })
+    if (result === 'saved' || result === 'downloaded') setStatus({ text: `${result === 'saved' ? 'Guardado:' : 'Descargado:'} ${name}.` })
+    else if (result === 'failed') setStatus({ text: `No se pudo guardar ${name}.`, warning: true })
     return result === 'saved' || result === 'downloaded'
   }
 
   const saveProject = async () => {
     const snapshot = doc
     const name = `${baseName(s)}${EXTENSION}`
-    if (report(name, await saveFile(name, serializeProject(snapshot), 'application/json', 'Voronoi Studio project'))) design.markSaved(snapshot)
+    if (report(name, await saveFile(name, serializeProject(snapshot), 'application/json', 'Proyecto de Voronoi Studio'))) design.markSaved(snapshot)
   }
 
   const exportFile = async (kind: ExportKind) => {
     const base = baseName(s)
-    if (kind === 'svg') report(`${base}.svg`, await saveFile(`${base}.svg`, artworkSvg(geometry, doc.points, s), 'image/svg+xml', 'SVG image'))
-    if (kind === 'laser') report(`${base}-cut.svg`, await saveFile(`${base}-cut.svg`, laserSvg(geometry, doc.points, s), 'image/svg+xml', 'SVG cut file'))
-    if (kind === 'dxf') report(`${base}.dxf`, await saveFile(`${base}.dxf`, cutDxf(geometry, doc.points, s), 'application/dxf', 'DXF drawing'))
+    if (kind === 'svg') report(`${base}.svg`, await saveFile(`${base}.svg`, artworkSvg(geometry, doc.points, s), 'image/svg+xml', 'Imagen SVG'))
+    if (kind === 'laser') report(`${base}-cut.svg`, await saveFile(`${base}-cut.svg`, laserSvg(geometry, doc.points, s), 'image/svg+xml', 'Archivo SVG para corte'))
+    if (kind === 'dxf') report(`${base}.dxf`, await saveFile(`${base}.dxf`, cutDxf(geometry, doc.points, s), 'application/dxf', 'Dibujo DXF'))
     if (kind === 'png') {
       const [w, h] = pixelSize(s.width, s.height, s.dpi)
       const problem = pngProblem(w, h)
       if (problem) { setStatus({ text: problem, warning: true }); return }
-      setStatus({ text: `Drawing a ${w.toLocaleString()} × ${h.toLocaleString()} px PNG…` })
+      setStatus({ text: `Generando un PNG de ${w.toLocaleString()} × ${h.toLocaleString()} px…` })
       const blob = await renderPng(geometry, doc.points, s, w, h)
-      if (!blob) { setStatus({ text: 'The browser could not draw a PNG this large. Lower the pixels per inch.', warning: true }); return }
-      report(`${base}.png`, await saveFile(`${base}.png`, blob, 'image/png', 'PNG image'))
+      if (!blob) { setStatus({ text: 'El navegador no pudo generar un PNG tan grande. Reduce los píxeles por pulgada.', warning: true }); return }
+      report(`${base}.png`, await saveFile(`${base}.png`, blob, 'image/png', 'Imagen PNG'))
     }
   }
 
-  const relaxBlocked = count < 3 && 'Relaxing needs at least 3 points.'
+  const relaxBlocked = count < 3 && 'Se necesitan al menos 3 puntos para relajar.'
   const toggle = (key: 'showSites' | 'showEdges' | 'showDelaunay') => design.change({ [key]: !s[key] }, key)
   const closeQuickStart = () => { setShowQuickStart(false); storage.set(QUICK_START_KEY, '1') }
 
@@ -254,8 +254,8 @@ export function App() {
     return () => window.removeEventListener('keydown', onKey)
   })
 
-  const statusText = status?.text ?? (design.busy ? 'Updating the pattern…'
-    : `${count.toLocaleString()} cells · seed ${s.seed}${doc.handEdited ? ' · edited by hand' : ''}`)
+  const statusText = status?.text ?? (design.busy ? 'Actualizando el patrón…'
+    : `${count.toLocaleString()} celdas · semilla ${s.seed}${doc.handEdited ? ' · editado a mano' : ''}`)
 
   return <main className="studio">
     <TooltipLayer />
@@ -266,16 +266,16 @@ export function App() {
     </div>
 
     <header className="brand glass">
-      <div><p className="app-kicker">Voronoi patterns for making</p><h1>Voronoi Studio</h1></div>
-      <button type="button" className="icon-button" aria-label="Keyboard shortcuts and help" data-tip="Keyboard shortcuts and the quick start." data-key="?" onClick={() => setShowHelp(true)}>?</button>
+      <div><p className="app-kicker">Patrones Voronoi para crear</p><h1>Voronoi Studio</h1></div>
+      <button type="button" className="icon-button" aria-label="Atajos de teclado y ayuda" data-tip="Atajos de teclado y guía de inicio." data-key="?" onClick={() => setShowHelp(true)}>?</button>
     </header>
 
-    <aside className="sidebar side-panel glass" aria-label="Design controls">
-      <Tabs label="Design controls" idBase="design" value={tab} onChange={setTab} tabs={[
-        { id: 'pattern', label: 'Pattern', title: 'How many cells, where the points go, gradients and relaxation.', badge: doc.stale ? 'settings not applied' : undefined },
-        { id: 'sheet', label: 'Sheet', title: 'Sheet size, shape, units and border.' },
-        { id: 'style', label: 'Style', title: 'Lines or holes, web width, corner radius and colours.' },
-        { id: 'file', label: 'File', title: 'Save or open a project, and export laser SVG, DXF, SVG or PNG.', badge: design.unsaved ? 'unsaved changes' : undefined },
+    <aside className="sidebar side-panel glass" aria-label="Controles del diseño">
+      <Tabs label="Controles del diseño" idBase="design" value={tab} onChange={setTab} tabs={[
+        { id: 'pattern', label: 'Patrón', title: 'Cantidad y distribución de celdas, gradientes y relajación.', badge: doc.stale ? 'ajustes sin aplicar' : undefined },
+        { id: 'sheet', label: 'Lámina', title: 'Tamaño, forma, unidades y borde de la lámina.' },
+        { id: 'style', label: 'Estilo', title: 'Líneas o huecos, ancho del material, radio de las esquinas y colores.' },
+        { id: 'file', label: 'Archivo', title: 'Guarda o abre un proyecto y exporta SVG para láser, DXF, SVG o PNG.', badge: design.unsaved ? 'cambios sin guardar' : undefined },
       ]} />
       <TabPanel idBase="design" id="pattern" value={tab}>
         <PatternPanel s={s} change={design.change} stale={doc.stale} onApply={applySettings} actualCount={count}
@@ -287,12 +287,12 @@ export function App() {
         <FilePanel s={s} change={design.change} unsaved={design.unsaved} busy={design.busy} openError={openError}
           onNew={newDesign} onOpen={openProject} onSave={() => void saveProject()} onExport={kind => void exportFile(kind)} />
       </TabPanel>
-      <input ref={fileInput} type="file" accept=".json,application/json" hidden aria-label="Choose a project file" onChange={event => {
+      <input ref={fileInput} type="file" accept=".json,application/json" hidden aria-label="Elige un archivo de proyecto" onChange={event => {
         const file = event.currentTarget.files?.[0]
         event.currentTarget.value = ''
         if (file) void readProject(file)
       }} />
-      <input ref={shapeInput} type="file" accept=".svg,image/svg+xml" hidden aria-label="Choose an SVG shape" onChange={event => {
+      <input ref={shapeInput} type="file" accept=".svg,image/svg+xml" hidden aria-label="Elige una forma SVG" onChange={event => {
         const file = event.currentTarget.files?.[0]
         event.currentTarget.value = ''
         if (file) void readShape(file)
@@ -310,7 +310,7 @@ export function App() {
         canUndo={design.canUndo} canRedo={design.canRedo} onUndo={design.undo} onRedo={design.redo} />
     </div>
 
-    <aside className="inspector side-panel glass" aria-label="Measurements">
+    <aside className="inspector side-panel glass" aria-label="Medidas">
       <Inspector m={geometry.metrics} s={s} count={count} />
     </aside>
 

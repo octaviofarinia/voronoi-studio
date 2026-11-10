@@ -16,8 +16,8 @@ export type SvgOutlines = {
 export class SvgShapeError extends Error {}
 
 // Illustrator saves a shape as a picture when SVG can't describe its look: a freeform gradient, a mesh or an effect.
-export const PICTURE_ONLY = 'This SVG is only a picture, with no lines. In Illustrator, select the shape, click Clear Appearance '
-  + 'in the Appearance panel, add a stroke and export again.'
+export const PICTURE_ONLY = 'Este SVG solo contiene una imagen, sin líneas. En Illustrator, selecciona la forma, haz clic en Borrar apariencia '
+  + 'en el panel Apariencia, agrega un trazo y vuelve a exportar.'
 
 const MM: Record<string, number> = { mm: 1, cm: 10, q: 0.25, in: 25.4, pt: 25.4 / 72, pc: 25.4 / 6, px: 25.4 / 96, '': 25.4 / 96 }
 // Elements whose contents are never drawn directly, or aren't outlines.
@@ -27,7 +27,7 @@ const SKIP = new Set(['defs', 'symbol', 'clippath', 'mask', 'pattern', 'marker',
 const UNDRAWN = new Set(['defs', 'symbol', 'clippath', 'mask', 'pattern', 'marker', 'style', 'script', 'title', 'desc', 'metadata',
   'lineargradient', 'radialgradient', 'filter'])
 const MAX_POINTS = 200_000
-const TOO_DETAILED = 'This SVG has too much detail to use as a shape. Simplify it and try again.'
+const TOO_DETAILED = 'Este SVG tiene demasiados detalles para usarlo como forma. Simplifícalo y vuelve a intentarlo.'
 
 type Matrix = [number, number, number, number, number, number] // x' = a x + c y + e, y' = b x + d y + f
 const IDENTITY: Matrix = [1, 0, 0, 1, 0, 0]
@@ -117,11 +117,11 @@ export function parsePathData(d: string, tol: number): Subpath[] {
     skip()
     STICKY_NUMBER.lastIndex = i
     const m = STICKY_NUMBER.exec(d)
-    if (!m) throw new SvgShapeError('A path in this SVG has damaged data.')
+    if (!m) throw new SvgShapeError('Un trazado de este SVG contiene datos dañados.')
     i += m[0].length
     return Number(m[0])
   }
-  const readFlag = () => { skip(); const c = d[i++]; if (c !== '0' && c !== '1') throw new SvgShapeError('A path in this SVG has a damaged arc.'); return c === '1' }
+  const readFlag = () => { skip(); const c = d[i++]; if (c !== '0' && c !== '1') throw new SvgShapeError('Un trazado de este SVG contiene un arco dañado.'); return c === '1' }
 
   // Asserted, not annotated: the helpers below reassign it, which narrowing can't see.
   let current = null as Subpath | null
@@ -139,7 +139,7 @@ export function parsePathData(d: string, tol: number): Subpath[] {
     skip()
     if (i >= d.length) break
     if (/[A-Za-z]/.test(d[i])) command = d[i++]
-    else if (!command) throw new SvgShapeError('A path in this SVG has damaged data.')
+    else if (!command) throw new SvgShapeError('Un trazado de este SVG contiene datos dañados.')
     const rel = command === command.toLowerCase()
     const C = command.toUpperCase()
     const ox = rel ? x : 0, oy = rel ? y : 0
@@ -188,10 +188,10 @@ export function parsePathData(d: string, tol: number): Subpath[] {
         command = '' // a number right after Z is an error, but a new command letter is fine
         continue
       }
-      default: throw new SvgShapeError(`This SVG uses a path command (${command}) that isn't part of SVG.`)
+      default: throw new SvgShapeError(`Este SVG usa un comando de trazado (${command}) que no pertenece al formato SVG.`)
     }
     // More numbers without a letter repeat the same command; otherwise the next letter is read.
-    if (!peekNumber() && i < d.length && !/[A-Za-z]/.test(d[i])) throw new SvgShapeError('A path in this SVG has damaged data.')
+    if (!peekNumber() && i < d.length && !/[A-Za-z]/.test(d[i])) throw new SvgShapeError('Un trazado de este SVG contiene datos dañados.')
   }
   if (current && current.points.length) subpaths.push(current)
   return subpaths
@@ -296,7 +296,7 @@ function outlinesOf(name: string, a: Attributes, tol: number, filled = false): {
 
 // All closed outlines in a file, in millimetres. tolerance: how far flattened curves may stray, in mm.
 export function readSvgOutlines(text: string, tolerance = 0.02): SvgOutlines {
-  if (!/<svg[\s>]/i.test(text)) throw new SvgShapeError('This file is not an SVG drawing.')
+  if (!/<svg[\s>]/i.test(text)) throw new SvgShapeError('Este archivo no es un dibujo SVG.')
   const illustrator = /Adobe Illustrator/i.test(text) || /data-name\s*=/.test(text)
   const body = text.replace(/<!--[\s\S]*?-->/g, '').replace(/<!\[CDATA\[[\s\S]*?\]\]>/g, '').replace(/<\?[\s\S]*?\?>/g, '').replace(/<!DOCTYPE[\s\S]*?>/gi, '')
 
@@ -381,7 +381,7 @@ export function readSvgOutlines(text: string, tolerance = 0.02): SvgOutlines {
     if (!parent?.skip && !hidden(a) && !UNDRAWN.has(name)) { const id = clipOf(a, clipClass); if (id) clipUses.push({ id, m }) }
     if (!selfClosing) stack.push({ name, m, skip, clip })
   }
-  if (!rootScale) throw new SvgShapeError('This file is not an SVG drawing.')
+  if (!rootScale) throw new SvgShapeError('Este archivo no es un dibujo SVG.')
   // A file of pictures alone has no closed outlines, but the clipping paths that trim the pictures are their outlines.
   let fromClip = false
   if (!rings.length && clips.size) {
@@ -402,8 +402,8 @@ export function readSvgOutlines(text: string, tolerance = 0.02): SvgOutlines {
     fromClip = rings.length > 0
   }
   if (!rings.length) {
-    throw new SvgShapeError(open ? 'This SVG has only open lines. Close the outline (join its ends) so it encloses an area, and try again.'
-      : pictures ? PICTURE_ONLY : 'This SVG has no closed outlines to use as a shape.')
+    throw new SvgShapeError(open ? 'Este SVG solo contiene líneas abiertas. Cierra el contorno uniendo sus extremos para que delimite un área y vuelve a intentarlo.'
+      : pictures ? PICTURE_ONLY : 'Este SVG no tiene contornos cerrados que puedan usarse como forma.')
   }
   return { rings, units, open, fromClip }
 }

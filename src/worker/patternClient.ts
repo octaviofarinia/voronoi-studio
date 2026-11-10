@@ -17,7 +17,7 @@ export class PatternClient {
         this.pending.delete(id)
         if (!waiting) return
         if (result) waiting.resolve(result)
-        else waiting.reject(new Error(error ?? 'The pattern could not be made.'))
+        else waiting.reject(new Error(error ?? 'No se pudo crear el patrón.'))
       }
       this.worker.onerror = () => this.fallBack()
     } catch {

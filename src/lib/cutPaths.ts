@@ -35,27 +35,27 @@ export function cutPaths(g: Geometry, points: Float64Array, s: CutSettings): Cut
 // The parts a cut file will hold, in plain words, for the File tab. Empty when there's nothing to cut.
 export function cutContents(s: CutSettings): string[] {
   const parts: string[] = []
-  if (s.showEdges) parts.push(s.cellStyle === 'holes' ? 'holes' : 'cell edges')
-  if (s.showSites) parts.push('sites')
-  if (s.showDelaunay) parts.push('Delaunay lines')
-  if (s.sheetOutline) parts.push('the sheet outline')
+  if (s.showEdges) parts.push(s.cellStyle === 'holes' ? 'huecos' : 'aristas de las celdas')
+  if (s.showSites) parts.push('puntos')
+  if (s.showDelaunay) parts.push('líneas de Delaunay')
+  if (s.sheetOutline) parts.push('el contorno de la lámina')
   return parts
 }
 
 // Which layer holds what, for the File tab. `sheetHoles`: the sheet is an imported shape with holes.
 export function cutLayers(s: CutSettings, sheetHoles: boolean): string[] {
-  const inner = s.showEdges ? (s.cellStyle === 'holes' ? 'holes' : 'cell edges') : s.sheetOutline && sheetHoles ? "the shape's holes" : ''
+  const inner = s.showEdges ? (s.cellStyle === 'holes' ? 'huecos' : 'aristas de las celdas') : s.sheetOutline && sheetHoles ? "huecos de la forma" : ''
   return [
-    inner && `CUT_INNER for ${inner}`,
-    s.sheetOutline && 'CUT_OUTER for the outline',
-    s.showSites && 'SITES (green) for sites',
-    s.showDelaunay && 'DELAUNAY (magenta) for Delaunay lines',
+    inner && `CUT_INNER para ${inner}`,
+    s.sheetOutline && 'CUT_OUTER para el contorno',
+    s.showSites && 'SITES (verde) para los puntos',
+    s.showDelaunay && 'DELAUNAY (magenta) para las líneas de Delaunay',
   ].filter((part): part is string => Boolean(part))
 }
 
 // "a", "a and b", "a, b and c".
 export function listWords(words: string[]): string {
-  return words.length < 2 ? words.join('') : `${words.slice(0, -1).join(', ')} and ${words[words.length - 1]}`
+  return words.length < 2 ? words.join('') : `${words.slice(0, -1).join(', ')} y ${words[words.length - 1]}`
 }
 
 // Numbers for files: millimetres to a thousandth, without trailing zeros.

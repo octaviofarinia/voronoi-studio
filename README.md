@@ -2,7 +2,9 @@
 
 Voronoi Studio is a browser app for designing Voronoi patterns to make things with. Pick a sheet size and shape, or import your own outline from an SVG, choose how many cells and how they're placed, shape them with gradients and relaxation, and drag, add or erase cells by hand. Then export them at real size: a laser-ready SVG or a DXF for cutting, or an SVG or PNG for artwork. It rebuilds and extends Gil's Voronoi Lab.
 
-**Use it online:** https://gil336699.github.io/voronoi-studio/
+**Usar la versión en español:** https://octaviofarinia.github.io/voronoi-studio/
+
+Este fork personal traduce la interfaz al español sin cambiar su funcionalidad. El proyecto original es [Voronoi Studio de gil336699](https://github.com/gil336699/voronoi-studio).
 
 ![Voronoi Studio in use: random points relax into even cells, a radial gradient makes cells smaller toward the centre, the cells become holes, a cell is dragged by hand, a leaf-shaped SVG outline with a hanging hole is dropped in and filled, and a laser SVG is exported.](docs/demo.gif)
 

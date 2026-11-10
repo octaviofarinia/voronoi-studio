@@ -61,7 +61,7 @@ export function artworkSvg(g: Geometry, points: Float64Array, s: Settings): stri
   const width = num(s.lineWidth, 4)
   const stroke = `stroke="${s.lineColor}" stroke-width="${width}" stroke-linecap="round" stroke-linejoin="round"`
   const fill = s.fill ? s.fillColor : 'none'
-  let svg = header(s, true, 'Voronoi Studio artwork')
+  let svg = header(s, true, 'Diseño de Voronoi Studio')
   svg += `<g id="sheet">${regionElement(g.sheet, `fill="${s.background}"`)}</g>\n`
   if (s.showEdges) {
     svg += `<g id="cells" fill="${fill}" ${stroke}>\n`
@@ -89,7 +89,7 @@ export function laserSvg(g: Geometry, points: Float64Array, s: Settings): string
   const cut = cutPaths(g, points, s)
   const hairline = (colour: string) => `fill="none" stroke="${colour}" stroke-width="${HAIRLINE_MM}"`
   const style = hairline(LASER_RED)
-  let svg = header(s, false, 'Voronoi Studio cut lines')
+  let svg = header(s, false, 'Líneas de corte de Voronoi Studio')
   if (cut.delaunay.length) svg += `<g id="delaunay" ${hairline(LASER_DELAUNAY)}><path d="${segmentsPath(cut.delaunay)}"/></g>\n`
   if (cut.sites) {
     const { points: p, r } = cut.sites

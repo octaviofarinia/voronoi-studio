@@ -49,7 +49,7 @@ export function shapeFromOutlines(outlines: Polygon[], name: string, sized: Cust
   }
   const [x0, y0, x1, y1] = boxOf(rings)
   const w = x1 - x0, h = y1 - y0
-  if (!rings.length || w < 1 || h < 1) throw new ShapeError('The outline in this SVG is too small to use as a sheet (under 1 mm).')
+  if (!rings.length || w < 1 || h < 1) throw new ShapeError('El contorno de este SVG es demasiado pequeño para usarlo como lámina (menos de 1 mm).')
   const round = (v: number) => Math.round(v * 1e6) / 1e6
   return { name, width: w, height: h, sized, rings: rings.map(ring => ring.flatMap(([x, y]) => [round((x - x0) / w), round((y - y0) / h)])) }
 }
@@ -67,7 +67,7 @@ export function sanitizeShape(raw: unknown): CustomShape | null {
     if (!ring.every(v => typeof v === 'number' && Number.isFinite(v) && v >= -0.001 && v <= 1.001)) return null
   }
   return {
-    name: typeof name === 'string' ? name.slice(0, 120) : 'Imported shape', width, height,
+    name: typeof name === 'string' ? name.slice(0, 120) : 'Forma importada', width, height,
     sized: sized === 'css' || sized === 'illustrator' ? sized : 'file', rings: rings as number[][],
   }
 }
